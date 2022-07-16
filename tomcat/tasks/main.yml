@@ -1,0 +1,60 @@
+---
+# tasks file for tomcat
+#
+- name: Upgrade packages
+  ansible.builtin.yum:
+    name: '*'
+    state: latest
+- name: Enabling openjdk 11
+  ansible.builtin.command:
+    cmd: amazon-linux-extras enable "{{ javaversion }}"
+- name: Install java-openjdk11
+  ansible.builtin.yum:
+    name: "{{ javapackagename }}"
+    state: present
+- name:  Groupadd Tomcat
+  ansible.builtin.group:
+    name: "{{ tomcat_group }}"
+    state: present
+- name: Adding Tomcat user
+  ansible.builtin.user:
+    name: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    home: "{{ tomcat_home }}"
+    system: yes
+    shell: /usr/bin/false
+- name: Creating /usr/share/tomcat
+  ansible.builtin.file:
+    path: "{{ tomcat_home }}"
+    state: directory
+    mode: 0755
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+- name: Install wget package
+  ansible.builtin.yum:
+    name: wget
+    state: present
+- name: Download Tomcat
+  ansible.builtin.get_url:
+    url: "{{ tomcat_download_url }}{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"
+    dest: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
+- name: Extract tomcat package
+  ansible.builtin.unarchive:
+    src: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
+    dest: "{{ tomcat_home }}"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    remote_src: yes
+- name: Creating tomcat.service
+  ansible.builtin.template:
+    src: tomcat.service.j2
+    dest: /etc/systemd/system/tomcat.service
+  vars:
+    java_home: /usr/lib/jvm/jre
+- name: Copy tomcat user.xml
+  ansible.builtin.template:
+    src: tomcat-users.xml
+    dest: "/usr/share/tomcat/apache-tomcat-{{ tomcat_version }}/conf/tomcat-users.xml"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+  notify: Enable and start Tomcat
