@@ -51,5 +51,5 @@
   <user username="both" password="<must-be-changed>" roles="tomcat,role1"/>
   <user username="role1" password="<must-be-changed>" roles="role1"/>
 -->
-	  <user username="{{ tomcat_user }}" password="{{ tomcat_password }}" roles="tomcat"/>
+  <user username="{{ tomcat_user }}" password="{{ tomcat_password }}" roles="tomcat"/>
 </tomcat-users>
