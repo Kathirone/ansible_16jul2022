@@ -58,15 +58,5 @@
     owner: "{{ tomcat_user }}"
     group: "{{ tomcat_group }}"
   notify: Enable and start Tomcat
-- name: "Download war file"
-  community.general.maven_artifact:
-    group_id: in.warf
-    artifact_id: web-app
-    extension: war
-    version: 1.0
-    repository_url: 'http://18.234.83.95:8081/repository/nexus_tomcat/'
-    username: admin
-    password: Admin0123
-    dest: "/home/ec2-user/web-app.war"
-    mode: '0644'
+
 
