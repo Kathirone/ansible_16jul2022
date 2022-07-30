@@ -58,5 +58,10 @@
     owner: "{{ tomcat_user }}"
     group: "{{ tomcat_group }}"
   notify: Enable and start Tomcat
+- name: copy jar file
+  ansible.builtin.copy:
+    src: "http://3.82.21.42:8081/repository/mymaven-releases/com/mycompany/app/my-app/1.7/my-app-1.7.jar"
+    dest: ""{{ tomcat_download_url }}{{ tomcat_version }}/webapps"
+
 
 
