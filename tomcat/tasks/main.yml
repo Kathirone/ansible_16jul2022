@@ -61,7 +61,7 @@
 - name: copy jar file
   ansible.builtin.copy:
     src: "http://3.82.21.42:8081/repository/mymaven-releases/com/mycompany/app/my-app/1.7/my-app-1.7.jar"
-    dest: ""{{ tomcat_download_url }}{{ tomcat_version }}/webapps"
+    dest: "/usr/share/tomcat/apache-tomcat-{{ tomcat_version }}/webapps"
 
 
 
